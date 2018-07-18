@@ -1,5 +1,6 @@
 build*
 src/GUI/ui_*
+grib/*
 *.o
 *.a
 *.so
@@ -13,3 +14,5 @@ data/config
 mac_online_installer/packages/org.opengribs.xygrib.core.mac/.DS_Store
 .DS_Store
 *.autosave
+*~
+.*~
