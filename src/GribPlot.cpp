@@ -29,7 +29,7 @@ GribPlot::GribPlot()
 }
 //----------------------------------------------------
 GribPlot::GribPlot (const GribPlot &model)
-	: RegularGridPlot ()
+	: RegularGridPlot (model)
 {
 	initNewGribPlot (model.mustInterpolateValues, model.drawWindArrowsOnGrid, model.drawCurrentArrowsOnGrid);	
     GribPlot::loadFile (model.fileName);
