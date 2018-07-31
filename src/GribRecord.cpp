@@ -697,6 +697,7 @@ GribRecord::GribRecord (ZUFILE* file, int id_)
 // Constructeur de recopie
 //-------------------------------------------------------------------------------
 GribRecord::GribRecord (const GribRecord &rec, bool copy)
+ : RegularGridRecord(rec) 
 {
     *this = rec;
 	setDuplicated (true);
