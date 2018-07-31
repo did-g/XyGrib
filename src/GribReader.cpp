@@ -78,7 +78,6 @@ void GribReader::clean_vector (std::vector<GribRecord *> &ls)
 {
     for (auto & l : ls) {
         delete l;
-        l = NULL;
     }
     ls.clear();
 }
