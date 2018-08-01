@@ -28,16 +28,6 @@ GribPlot::GribPlot()
 	initNewGribPlot();
 }
 //----------------------------------------------------
-GribPlot::GribPlot (const GribPlot &model)
-	: RegularGridPlot (model)
-{
-	initNewGribPlot (model.mustInterpolateValues, model.drawWindArrowsOnGrid, model.drawCurrentArrowsOnGrid);	
-    GribPlot::loadFile (model.fileName);
-    GribPlot::interpolateMissingRecords (model.mustInterpolateMissingRecords);
-    GribPlot::duplicateFirstCumulativeRecord (model.mustDuplicateFirstCumulativeRecord);
-    GribPlot::duplicateMissingWaveRecords (model.mustDuplicateMissingWaveRecords);
-}
-//----------------------------------------------------
 GribPlot::~GribPlot() {
     delete gribReader;
 }

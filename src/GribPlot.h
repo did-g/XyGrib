@@ -36,7 +36,9 @@ class GribPlot : public RegularGridPlot
 {
     public:
         GribPlot ();
-        GribPlot (const GribPlot &);
+        GribPlot (const GribPlot &) = delete;
+        GribPlot& operator=( const GribPlot& ) = delete; // non copyable
+
         virtual ~GribPlot ();
         
 		virtual void  loadFile (const QString &fileName,
