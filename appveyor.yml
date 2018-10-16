@@ -1,9 +1,13 @@
 clone_folder: c:\project\xygrib
 shallow_clone: true
 
-#branches:
-#  only:
-#    - master
+branches:
+  only:
+    - master
+    - prelease
+    - ci/appveyor
+    - appveyor
+    - dev
 
 image:
 - Visual Studio 2015
