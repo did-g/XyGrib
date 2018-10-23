@@ -74,7 +74,7 @@ find_package(Qt5Xml CONFIG REQUIRED)
 include_directories(${Qt5Xml_INCLUDE_DIRS})
 
 find_library(LIBNOVA_LIBRARY
-     NAMES "libnova.a" "libnova.so"
+     NAMES "libnova.dll.a" "libnova.a" "libnova.so"
      PATHS
      $ENV{EXTERNLIBS}/lib
      ~/Library/Frameworks
@@ -107,7 +107,7 @@ include_directories(${LIBNOVA_INCLUDE_DIR})
 #find_package(OpenJPEG REQUIRED)
 find_library(OPENJPEG_LIBRARIES
 #     NAMES "libopenjp2.a" "libopenjp2.so" "libopenjpeg.so.2" "libopenjp2.dll.a"
-     NAMES "libopenjp2.so.7" "libopenjp2.so" "libopenjp2.a" "libopenjpeg.so.2" "libopenjp2.dll.a"
+     NAMES "libopenjp2.so.7" "libopenjp2.so" "libopenjp2.dll.a" "libopenjp2.a" "libopenjpeg.so.2"
      PATHS
      $ENV{EXTERNLIBS}/lib
      ~/Library/Frameworks
@@ -155,7 +155,7 @@ if(NOT WIN32)
 endif()
 if(WIN32)
     find_library(PROJ4_LIBRARIES
-        NAME "libproj.a"
+        NAME "libproj.dll.a" "libproj.a"
         PATHS
         $ENV{EXTERNLIBS}/lib
          /opt/lib
@@ -172,7 +172,8 @@ endif()
 if(WIN32)
     message(STATUS "Search WIN32 BZIP2")
     find_library(BZIP2_LIBRARIES
-        NAME "libbz2.a"
+        NAME "libbz2.dll.a" "libbz2.a"
+#        NAME "libbz2.a" "libbz2.dll.a"
         PATHS
         $ENV{EXTERNLIBS}/lib
          /opt/lib
@@ -192,7 +193,7 @@ include_directories(${BZIP2_INCLUDE_DIR})
 
 if(WIN32)
     find_library(ZLIB_LIBRARIES
-        NAME "libz.a"
+        NAME "libz.dll.a" "libz.a"
         PATHS
         $ENV{EXTERNLIBS}/lib
         /opt/lib
@@ -213,7 +214,7 @@ include_directories(${ZLIB_INCLUDE_DIR})
 
 if(WIN32)
     find_library(PNG_LIBRARIES
-        NAME "libpng.a"
+        NAME "libpng.dll.a" "libpng.a"
         PATHS
         $ENV{EXTERNLIBS}/lib
         /opt/lib
