@@ -31,6 +31,7 @@ class DataPointInfo
 		float getDataValue (const DataCode &dtc) const;
 		
         bool hasPressureMSL() const {return GribDataIsDef(pressureMSL);}
+        bool hasPressureSFC() const {return GribDataIsDef(pressureSFC);}
         bool hasTemp()     const {return GribDataIsDef(temp);}
         bool hasWaterTemp()const {return GribDataIsDef(waterTemp);}
         bool hasTempMin()  const {return GribDataIsDef(tempMin);}
@@ -92,6 +93,7 @@ class DataPointInfo
 		float   windSpeed_gnd;
 		float   windDir_gnd;
         float   pressureMSL;
+        float   pressureSFC;
         float   rain;
         float   tempMin;
         float   tempMax;
