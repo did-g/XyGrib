@@ -658,7 +658,7 @@ bool  Terrain::getGribFileRectangle(double *x0, double *y0, double *x1, double *
 //---------------------------------------------------------
 // Grib files or ...
 //---------------------------------------------------------
-FileDataType Terrain::loadMeteoDataFile (const QString& fileName, bool zoom)
+FileDataType Terrain::loadMeteoDataFile (const QString& fileName, bool zoom, int slot)
 {
     indicateWaitingMap();
 	currentFileType = DATATYPE_NONE;
@@ -667,11 +667,6 @@ FileDataType Terrain::loadMeteoDataFile (const QString& fileName, bool zoom)
 	taskProgress = new LongTaskProgress (this);
 	assert (taskProgress);
 	taskProgress->continueDownload = true;
-	
-    if (griddedPlot != nullptr) {
-		delete griddedPlot;
-        griddedPlot = nullptr;
-	}
 	taskProgress->setMessage (LongTaskMessage::LTASK_OPEN_FILE);
 	taskProgress->setValue (0);
     //--------------------------------------------------------
@@ -694,6 +689,9 @@ FileDataType Terrain::loadMeteoDataFile (const QString& fileName, bool zoom)
 	}
 
     //----------------------------------------------
+    griddedPlot = nullptr;
+	griddedPlotMap[slot] = std::shared_ptr<GriddedPlotter>(nullptr);
+
     GriddedPlotter  *griddedPlot_Temp = nullptr;
 	if (nbrecs>0 && !ok && taskProgress->continueDownload) {	// try to load a GRIB file
 		//DBGQS("try to load a GRIB file: "+fileName);
@@ -713,8 +711,11 @@ FileDataType Terrain::loadMeteoDataFile (const QString& fileName, bool zoom)
 		}
 	}
 	taskProgress->setVisible (false);
+
+    griddedPlot = griddedPlot_Temp;
+	griddedPlotMap[slot] = std::shared_ptr<GriddedPlotter>(griddedPlot_Temp);
+	currentPlot = slot;
 	
-	griddedPlot = griddedPlot_Temp;
 	if (ok) {	// initializes data plotter
 		switch (currentFileType) {
 			case DATATYPE_GRIB :
@@ -764,9 +765,11 @@ FileDataType Terrain::loadMeteoDataFile (const QString& fileName, bool zoom)
 }
 
 //---------------------------------------------------------
-GriddedPlotter *Terrain::getGriddedPlotter ()
+GriddedPlotter *Terrain::getGriddedPlotter (int slot)
 {
-    if (currentFileType == DATATYPE_GRIB) {
+    if (griddedPlotMap.find(slot) != griddedPlotMap.end()) {
+		griddedPlot = griddedPlotMap[slot].get();
+		currentPlot = slot;
 		return griddedPlot;
     }
     return nullptr;
@@ -775,10 +778,9 @@ GriddedPlotter *Terrain::getGriddedPlotter ()
 //---------------------------------------------------------
 void   Terrain::closeMeteoDataFile()
 {
-    if (griddedPlot != nullptr) {
-		delete griddedPlot;
-        griddedPlot = nullptr;
-	}
+    griddedPlot = nullptr;
+	griddedPlotMap[currentPlot] = std::shared_ptr<GriddedPlotter>(nullptr);
+
 	currentFileType = DATATYPE_NONE;
 	mustRedraw = true;
     update();

@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef TERRAIN_H
 #define TERRAIN_H
 #include <memory>
+#include <map>
 
 #include <QWidget>
 #include <QToolBar>
@@ -50,15 +51,16 @@ public:
     MapDrawer   *getDrawer()      {return drawer;}
     Projection  *getProjection()  {return proj;}
     
-    FileDataType  loadMeteoDataFile (const QString& fileName, bool zoom);
+    FileDataType  loadMeteoDataFile (const QString& fileName, bool zoom, int slot = 0);
 	FileDataType  getMeteoFileType()  {return currentFileType;}
 
 	void  closeMeteoDataFile();
 
 	//--------------------------------------------------------
-	GriddedPlotter  *getGriddedPlotter ();
+	GriddedPlotter  *getGriddedPlotter (int slot);
+	GriddedPlotter  *getGriddedPlotter () { return getGriddedPlotter(currentPlot); }
 	//--------------------------------------------------------
-	
+
     void  indicateWaitingMap();    // Affiche un message d'attente
     
     bool  isSelectingZone()      {return isSelectionZoneEnCours;}
@@ -167,6 +169,8 @@ private:
     GisReader   *gisReader;
 
     GriddedPlotter  *griddedPlot;
+    std::map<int, std::shared_ptr<GriddedPlotter>>griddedPlotMap{};
+    int         currentPlot{0};
     
     bool        isEarthMapValid;
     bool        mustRedraw;
