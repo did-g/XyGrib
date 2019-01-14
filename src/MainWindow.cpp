@@ -1006,81 +1006,91 @@ void MainWindow::setMenubarItems()
 //-------------------------------------------------
 void MainWindow::openMeteoDataFile (const QString& fileName)
 {
+    MainWindow::openMeteoDataFiles({fileName});
+}
+
+void MainWindow::openMeteoDataFiles (const QStringList& fileNamesList)
+{
 	QCursor oldcursor = cursor();
 	setCursor(Qt::WaitCursor);
 	FileDataType meteoFileType = DATATYPE_NONE;
     colorScaleWidget->setColorScale (nullptr, DataCode());
     dateChooser->reset ();
-	if (QFile::exists(fileName))
-	{
-		// 	DBG ("open file %s", qPrintable(fileName));	
-		bool zoom = Util::getSetting("autoZoomOnGribArea", true).toBool();
-		meteoFileType = terre->loadMeteoDataFile (fileName, zoom);
-		if (meteoFileType != DATATYPE_NONE)
-			Util::setSetting("gribFileName",  fileName);
-	}
+    disableMenubarItems();
+
+    bool zoom = Util::getSetting("autoZoomOnGribArea", true).toBool();
+    bool atLeastOne = false;
+    for (auto fileName : fileNamesList) {
+        // 	DBG ("open file %s", qPrintable(fileName));	
+	    meteoFileType = terre->loadMeteoDataFile (fileName, zoom);
+	    if (meteoFileType == DATATYPE_CANCELLED) {
+            dateChooser->setGriddedPlotter (nullptr);
+	    	dateChooser->setVisible (false);
+ 	    	break;
+        }
+
+    	if (meteoFileType != DATATYPE_NONE)
+	    		Util::setSetting("gribFileName",  fileName);
 	
-	GriddedPlotter *plotter = terre->getGriddedPlotter();
-    if (plotter!=nullptr && plotter->isReaderOk())
-	{
-	    disableMenubarItems();
-	    setMenubarItems();
-		//------------------------------------------------
-		if (meteoFileType == DATATYPE_GRIB)
-		//------------------------------------------------
-		{
-			setWindowTitle (Version::getShortName()+" - "+ QFileInfo(fileName).fileName());
-			menuBar->updateListeDates (plotter->getListDates(),
+    	GriddedPlotter *plotter = terre->getGriddedPlotter();
+        if (plotter==nullptr || plotter->isReaderOk() == false)
+        {
+            QMessageBox::critical (this,
+			    	tr("Error"),
+			    	tr("File :") + fileName + "\n\n"
+    					+ tr("Can't open file.") + "\n\n"
+	    				+ tr("It's not a GRIB file,") + "\n"
+		    			+ tr("or it contains unrecognized data,") + "\n"
+			    		+ tr("or...")
+                    );
+            continue;
+        }
+	    //------------------------------------------------
+	    if (meteoFileType != DATATYPE_GRIB)
+	        continue;
+    	//------------------------------------------------
+        setMenubarItems();
+        atLeastOne = true;
+
+        setWindowTitle (Version::getShortName()+" - "+ QFileInfo(fileName).fileName());
+        menuBar->updateListeDates (plotter->getListDates(),
 									   plotter->getCurrentDate() );
-			gribFileName = fileName;
+    	gribFileName = fileName;
 
-			menuBar->acView_DuplicateFirstCumulativeRecord->setEnabled (true);
-			menuBar->acView_InterpolateMissingRecords->setEnabled (true);
-			menuBar->acView_DuplicateMissingWaveRecords->setEnabled (true);
+	    menuBar->acView_DuplicateFirstCumulativeRecord->setEnabled (true);
+        menuBar->acView_InterpolateMissingRecords->setEnabled (true);
+		menuBar->acView_DuplicateMissingWaveRecords->setEnabled (true);
 			
-			// Malformed grib file ?
-			GriddedReader *reader = plotter->getReader();
-			if (reader->hasAmbiguousHeader()) {
-				QMessageBox::warning (this,
-				tr("Warning"),
-				tr("File :") + fileName 
-				+ "\n\n"
-				+ tr("The header of this GRIB file do not respect standard format.")
-				+ "\n\n"
-				+ tr("Despite efforts to interpret it, output may be incorrect.")
-				+ "\n\n"
-				+ tr("Please inform the supplier of this file that the GDS section of "
-				   "the file header is ambiguous, particularly about data position.")					
-				+ "\n"
-				);
-			}
-		}
-		//------------------------------------------------
+    	// Malformed grib file ?
+	    GriddedReader *reader = plotter->getReader();
+		if (reader->hasAmbiguousHeader()) {
+			    QMessageBox::warning (this,
+    				tr("Warning"),
+	    			tr("File :") + fileName 
+		    		+ "\n\n"
+			    	+ tr("The header of this GRIB file do not respect standard format.")
+			    	+ "\n\n"
+    				+ tr("Despite efforts to interpret it, output may be incorrect.")
+	    			+ "\n\n"
+		    		+ tr("Please inform the supplier of this file that the GDS section of "
+			    	   "the file header is ambiguous, particularly about data position.")					
+			    	+ "\n"
+    				);
+        }
+        dateChooser->setGriddedPlotter (plotter);
+    }
+    //------------------------------------------------
+    if (atLeastOne)
+    {
 		menuBar->updateDateSelector( );
-
-		dateChooser->setGriddedPlotter (plotter);
-		dateChooser->setVisible (Util::getSetting("showDateChooser", true).toBool());
-		//-----------------------------------------------
-		updateGriddedData ();
-	}
-	//------------------------------------------------
-	else  
-	{
-		if (meteoFileType != DATATYPE_CANCELLED) {
-			QMessageBox::critical (this,
-				tr("Error"),
-				tr("File :") + fileName + "\n\n"
-					+ tr("Can't open file.") + "\n\n"
-					+ tr("It's not a GRIB file,") + "\n"
-					+ tr("or it contains unrecognized data,") + "\n"
-					+ tr("or...")
-			);
-		}
-        dateChooser->setGriddedPlotter (nullptr);
-		dateChooser->setVisible (false);
-		menuBar->updateListeDates({} , 0);
-	}
-	setCursor(oldcursor);
+        dateChooser->setVisible (Util::getSetting("showDateChooser", true).toBool());
+        updateGriddedData ();
+    }
+    else {
+        menuBar->updateListeDates({} , 0);
+    }
+    //-----------------------------------------------
+    setCursor(oldcursor);
 }
 //-------------------------------------------------------
 void MainWindow::slotUseJetStreamColorMap (bool b) 
@@ -1636,16 +1646,16 @@ void MainWindow::slotFile_Open()
 /*    filter =  tr("Fichiers GRIB (*.grb *.grib *.grb.bz2 *.grib.bz2 *.grb.gz *.grib.gz)")
             + tr(";;Autres fichiers (*)");*/
 	filter="";
-    QString fileName = Util::getOpenFileName(this,
+    QStringList fileNamesList = Util::getOpenFileNames(this,
                          tr("Choose a GRIB file"),
                          gribFilePath,
                          filter);
-    if (fileName != "")
+    if (! fileNamesList.empty() )
     {
-        QFileInfo finfo(fileName);
+        QFileInfo finfo(fileNamesList.at(0));
         gribFilePath = finfo.absolutePath();
     	Util::setSetting("gribFilePath",  gribFilePath);
-        openMeteoDataFile (fileName);
+        openMeteoDataFiles (fileNamesList);
     }
 }
 

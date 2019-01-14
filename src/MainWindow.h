@@ -65,6 +65,7 @@ class MainWindow: public QMainWindow
         ~MainWindow();
 
         void openMeteoDataFile (const QString& fileName);
+        void openMeteoDataFiles (const QStringList& fileName);
 		
 		void openSkewtDiagramWindow (double lon, double lat, 
 									 GriddedReader *reader = NULL, 

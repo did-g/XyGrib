@@ -104,6 +104,26 @@ QString Util::getOpenFileName (QWidget *parent, const QString &caption,
 	return QFileDialog::getOpenFileName (parent, caption, dir, filter);
 }
 //------------------------------------------------------------
+QStringList Util::getOpenFileNames (QWidget *parent, const QString &caption, 
+							const QString &dir, const QString &filter)
+{
+	#ifdef Q_OS_MACX
+		if ( QSysInfo::MacintoshVersion > QSysInfo::MV_10_8 )
+		{   // fix Mac OS X 10.9 (mavericks) QFileDialog bug
+			int useNative = Util::getSetting("mac_useNativeFileDialog", 999).toInt();
+			if (useNative == 999) {
+				Util::setSetting("mac_useNativeFileDialog", 0);
+				useNative = 0;
+			}
+			if (useNative == 0) {
+				return QFileDialog::getOpenFileNames (parent, caption, dir, filter, 
+							0, QFileDialog::DontUseNativeDialog);
+			}
+		}
+	#endif
+	return QFileDialog::getOpenFileNames (parent, caption, dir, filter);
+}
+//------------------------------------------------------------
 QString Util::getServerName ()
 {
     //return "www.zygrib.org";
