@@ -855,9 +855,7 @@ void MainWindow::setMenubarItems()
 	ok = plotter->hasDataType (GRB_DEWPOINT) && plotter->hasData (GRB_TEMP,LV_ABOV_GND,2);;
 	if (ok) menuBar->acView_DeltaDewpointColors->setEnabled(true);
 
-	ok = plotter->hasData (GRB_PRESSURE_MSL,LV_MSL,0);
-	if (!ok)
-	    ok = plotter->hasData (GRB_PRESSURE, LV_GND_SURF,0);
+	ok = plotter->hasData (GRB_PRESSURE_MSL,LV_MSL,0) || plotter->hasData (GRB_PRESSURE, LV_GND_SURF,0);
     if (ok) {
 	    menuBar->acView_Isobars->setEnabled(ok);
     	menuBar->acView_IsobarsLabels->setEnabled(ok);
