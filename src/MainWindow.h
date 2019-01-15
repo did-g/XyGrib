@@ -148,6 +148,11 @@ public slots:
         void slotPanToggle();	    // toolbar slot
         void slotSelectToggle();    // toolbar slot
 
+        void slotSlot0Toggle();
+        void slotSlot1Toggle();
+        void slotSlot2Toggle();
+        void slotSlot3Toggle();
+
         void slotCheckForUpdates();
         void slotRunMaintenanceTool();
         void slotNetworkError(QNetworkReply::NetworkError);
@@ -224,6 +229,7 @@ public slots:
 
         bool selectToggled; // true - select mode, false - pan mode
         void setSelectPanToggle(bool isSelect);
+        void selectSlotToggle(int slot);
 
 		void closeEvent (QCloseEvent *) {QApplication::quit();}
 		void moveEvent  (QMoveEvent *event);

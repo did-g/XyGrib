@@ -480,6 +480,15 @@ MenuBar::MenuBar (QWidget *parent, bool mbe)
     acSelectToggle = addActionCheck(nullptr,
                              tr("Toggle click to select"), "", tr("Toggle click to select"), Util::pathImg("cursor-cross.png"));
 
+    acSlot0 = addActionCheck(nullptr,
+                            tr("slot 0"), "", tr("Toggle slot 0"), Util::pathImg("cursor-cross.png"));
+    acSlot1 = addActionCheck(nullptr,
+                             tr("slot 1"), "", tr("Toggle slot 1"), Util::pathImg("cursor-cross.png"));
+    acSlot2 = addActionCheck(nullptr,
+                            tr("slot 2"), "", tr("Toggle slot 2"), Util::pathImg("cursor-cross.png"));
+    acSlot3 = addActionCheck(nullptr,
+                             tr("slot 3"), "", tr("Toggle slot 3"), Util::pathImg("cursor-cross.png"));
+
 	updateFonts();
 }
 

@@ -444,6 +444,10 @@ mb->acMap_SelectMETARs->setVisible (false);	// TODO
     connect(mb->acOptions_PanSelectToggle, SIGNAL(triggered()), this, SLOT(slotPanSelectToggle()));
     connect(mb->acPanToggle, SIGNAL(triggered()), this, SLOT(slotPanToggle()));
     connect(mb->acSelectToggle, SIGNAL(triggered()), this, SLOT(slotSelectToggle()));
+    connect(mb->acSlot0, SIGNAL(triggered()), this, SLOT(slotSlot0Toggle()));
+    connect(mb->acSlot1, SIGNAL(triggered()), this, SLOT(slotSlot1Toggle()));
+    connect(mb->acSlot2, SIGNAL(triggered()), this, SLOT(slotSlot2Toggle()));
+    connect(mb->acSlot3, SIGNAL(triggered()), this, SLOT(slotSlot3Toggle()));
 
     connect(mb->cbModelRect, SIGNAL(activated(int)),
             this, SLOT(slotModelRectChanged(int)));
@@ -620,6 +624,10 @@ void MainWindow::createToolBar ()
     toolBar->addAction(menuBar->acSelectToggle);
     toolBar->addAction(menuBar->acPanToggle);
     toolBar->addSeparator();
+    toolBar->addAction(menuBar->acSlot0);
+    toolBar->addAction(menuBar->acSlot1);
+    toolBar->addAction(menuBar->acSlot2);
+    toolBar->addAction(menuBar->acSlot3);
 }
 //-----------------------------------------------
 void MainWindow::moveEvent (QMoveEvent *)
@@ -2542,11 +2550,6 @@ void MainWindow::slotGenericAction ()
 //-------------------------------------------------
 void MainWindow::setSelectPanToggle(bool isSelect)
 {
-    GriddedPlotter *plotter = terre->getGriddedPlotter();
-    time_t cur_date = -1;
-
-    if (plotter != nullptr  && plotter->isReaderOk())
-        cur_date = plotter->getCurrentDate();
 
     selectToggled = isSelect;
 
@@ -2556,22 +2559,6 @@ void MainWindow::setSelectPanToggle(bool isSelect)
 
     terre->setMouseLeftSelect(selectToggled);
 
-    terre->setGriddedSlot(selectToggled);
-
-    plotter = terre->getGriddedPlotter ();
-    if (plotter==nullptr || plotter->isReaderOk() == false)
-        return;
-
-    disableMenubarItems();
-    setMenubarItems();
-
-    //setWindowTitle (Version::getShortName()+" - "+ QFileInfo(fileName).fileName());
-    if (cur_date != -1)
-        plotter->setCurrentDate(cur_date);
-    menuBar->updateListeDates (plotter->getListDates(), plotter->getCurrentDate());
-    dateChooser->setGriddedPlotter (plotter);
-
-    terre->slotMustRedraw();
 }
 
 // called by selecting from menu to toggle pan or select mode
@@ -2590,6 +2577,58 @@ void MainWindow::slotSelectToggle()
 {
     setSelectPanToggle(true);
 }
+
+// ----------------------------------------------------
+void MainWindow::selectSlotToggle(int slot)
+{
+    GriddedPlotter *plotter = terre->getGriddedPlotter();
+    time_t cur_date = -1;
+
+    if (plotter != nullptr  && plotter->isReaderOk())
+        cur_date = plotter->getCurrentDate();
+
+    terre->setGriddedSlot(slot);
+    menuBar->acSlot0->setChecked(slot == 0);
+    menuBar->acSlot1->setChecked(slot == 1);
+    menuBar->acSlot2->setChecked(slot == 2);
+    menuBar->acSlot3->setChecked(slot == 3);
+
+    plotter = terre->getGriddedPlotter ();
+    if (plotter==nullptr || plotter->isReaderOk() == false)
+        return;
+
+    disableMenubarItems();
+    setMenubarItems();
+
+    //setWindowTitle (Version::getShortName()+" - "+ QFileInfo(fileName).fileName());
+    if (cur_date != -1)
+        plotter->setCurrentDate(cur_date);
+    menuBar->updateListeDates (plotter->getListDates(), plotter->getCurrentDate());
+    dateChooser->setGriddedPlotter (plotter);
+
+    terre->slotMustRedraw();
+}
+
+void MainWindow::slotSlot0Toggle()
+{
+    selectSlotToggle(0);
+}
+
+void MainWindow::slotSlot1Toggle()
+{
+    selectSlotToggle(1);
+}
+
+void MainWindow::slotSlot2Toggle()
+{
+    selectSlotToggle(2);
+}
+
+void MainWindow::slotSlot3Toggle()
+{
+    selectSlotToggle(3);
+}
+
 // ----------------------------------------------------
 void MainWindow::checkUpdates()
 {

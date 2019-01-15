@@ -332,6 +332,11 @@ public:
     QAction *acPanToggle;	// toolbar selector
     QAction *acSelectToggle;	// toolbar selector
 
+    QAction *acSlot0;	// slot
+    QAction *acSlot1;	// slot
+    QAction *acSlot2;	// slot
+    QAction *acSlot3;	// slot
+
     QMenu *menuFile;
     QMenu *menuColorMap;
     QMenu *menuIsolines;
