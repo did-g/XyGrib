@@ -2542,6 +2542,12 @@ void MainWindow::slotGenericAction ()
 //-------------------------------------------------
 void MainWindow::setSelectPanToggle(bool isSelect)
 {
+    GriddedPlotter *plotter = terre->getGriddedPlotter();
+    time_t cur_date = -1;
+
+    if (plotter != nullptr  && plotter->isReaderOk())
+        cur_date = plotter->getCurrentDate();
+
     selectToggled = isSelect;
 
     menuBar->acPanToggle->setChecked(!selectToggled);
@@ -2549,6 +2555,23 @@ void MainWindow::setSelectPanToggle(bool isSelect)
     menuBar->acOptions_PanSelectToggle->setChecked(!selectToggled); // checked when 'pan' is selected => !select
 
     terre->setMouseLeftSelect(selectToggled);
+
+    terre->setGriddedSlot(selectToggled);
+
+    plotter = terre->getGriddedPlotter ();
+    if (plotter==nullptr || plotter->isReaderOk() == false)
+        return;
+
+    disableMenubarItems();
+    setMenubarItems();
+
+    //setWindowTitle (Version::getShortName()+" - "+ QFileInfo(fileName).fileName());
+    if (cur_date != -1)
+        plotter->setCurrentDate(cur_date);
+    menuBar->updateListeDates (plotter->getListDates(), plotter->getCurrentDate());
+    dateChooser->setGriddedPlotter (plotter);
+
+    terre->slotMustRedraw();
 }
 
 // called by selecting from menu to toggle pan or select mode

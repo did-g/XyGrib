@@ -51,14 +51,20 @@ public:
     MapDrawer   *getDrawer()      {return drawer;}
     Projection  *getProjection()  {return proj;}
     
-    FileDataType  loadMeteoDataFile (const QString& fileName, bool zoom, int slot = 0);
+    FileDataType  loadMeteoDataFile (const QString& fileName, bool zoom, int slot);
+    FileDataType  loadMeteoDataFile (const QString& fileName, bool zoom)
+    {return loadMeteoDataFile (fileName, zoom, currentPlot);}
+
 	FileDataType  getMeteoFileType()  {return currentFileType;}
 
 	void  closeMeteoDataFile();
 
 	//--------------------------------------------------------
+
 	GriddedPlotter  *getGriddedPlotter (int slot);
 	GriddedPlotter  *getGriddedPlotter () { return getGriddedPlotter(currentPlot); }
+
+	void setGriddedSlot (int slot) { currentPlot = slot; }
 	//--------------------------------------------------------
 
     void  indicateWaitingMap();    // Affiche un message d'attente

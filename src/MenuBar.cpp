@@ -671,8 +671,11 @@ void MenuBar::setWaveArrowsType (int type) {
 void MenuBar::updateListeDates(std::set<time_t> *setDates, time_t currentDate)
 {
     listGribDates.clear();
+    time_t new_date = currentDate;
     // Construit un vector à partir du set (plus pratique)
-    if (setDates) for (long setDate : *setDates) {
+    if (setDates) for (auto setDate : *setDates) {
+        if (setDate <= currentDate)
+            new_date = setDate; 
         listGribDates.push_back(setDate);
     }
 
@@ -681,14 +684,14 @@ void MenuBar::updateListeDates(std::set<time_t> *setDates, time_t currentDate)
         cbDatesGrib->removeItem(0);
     }
     auto nbe_dates = listGribDates.size();
-    for (long tps : listGribDates) {
+    for (auto tps : listGribDates) {
         QString str = Util::formatDateTimeLong(tps);
         //printf("%s\n", qPrintable(str));
         cbDatesGrib->addItem(str);
     }
     if ( nbe_dates > 1) {
         updateDateSelector( );
-        updateCurrentDate (currentDate);
+        updateCurrentDate (new_date);
         return;
     }
     if (nbe_dates == 0) {
