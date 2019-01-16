@@ -92,6 +92,10 @@ public:
 					
 	QPixmap * createPixmap (time_t date, int width, int height);
     
+    std::map<int, std::shared_ptr<GriddedPlotter>>griddedPlotMap{};
+    int         currentPlot{0};
+    bool        stack;
+
 public slots :
     // Map
     void setProjection (Projection *);
@@ -160,9 +164,6 @@ public slots :
     void slotTimerZoomWheel();
     void slotMustRedraw();
 
-    std::map<int, std::shared_ptr<GriddedPlotter>>griddedPlotMap{};
-    int         currentPlot{0};
-    bool        stack;
     
 signals:
     void selectionOK  (double x0, double y0, double x1, double y1);
