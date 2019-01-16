@@ -43,7 +43,7 @@ friend class Terrain;	// TODO (or not) getters setters
 		MapDrawer(std::shared_ptr<GshhsReader>  gshhsReader);
 		MapDrawer(const MapDrawer &model);
 		~MapDrawer();
-
+/*
 		void draw_GSHHS_and_GriddedData (
 				QPainter &pntGlobal,
 				bool mustRedraw,
@@ -52,7 +52,16 @@ friend class Terrain;	// TODO (or not) getters setters
 				GriddedPlotter *plotter,
 				bool drawCartouche = true
 			);
-		
+*/
+		void draw_GSHHS_and_GriddedData (
+				QPainter &pntGlobal,
+				bool mustRedraw, bool isEarthMapValid,
+				Projection *proj,
+				int firstSlot,
+				bool stack,
+				std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap,
+				bool drawCartouche = true
+			);
 		void draw_GSHHS (
 				QPainter &pntGlobal,
 				bool mustRedraw,
@@ -74,7 +83,9 @@ friend class Terrain;	// TODO (or not) getters setters
 		QPixmap * createPixmap_GriddedData ( 
 						time_t date, 
 						bool isEarthMapValid, 
-						GriddedPlotter *plotter,
+						int firstSlot,
+						bool stack,
+						std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap,
 						Projection *proj,
 						const QList<POI*>& lspois );
 

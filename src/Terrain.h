@@ -154,10 +154,15 @@ public slots :
     void setDrawLinesThetaE_Labels (bool);
     void setLinesThetaE_Step	    (double step);
     void setLinesThetaE_Altitude   (Altitude alt);
+    void setStack                  (bool);
 	
     void slotTimerResize();
     void slotTimerZoomWheel();
     void slotMustRedraw();
+
+    std::map<int, std::shared_ptr<GriddedPlotter>>griddedPlotMap{};
+    int         currentPlot{0};
+    bool        stack;
     
 signals:
     void selectionOK  (double x0, double y0, double x1, double y1);
@@ -175,8 +180,6 @@ private:
     GisReader   *gisReader;
 
     GriddedPlotter  *griddedPlot;
-    std::map<int, std::shared_ptr<GriddedPlotter>>griddedPlotMap{};
-    int         currentPlot{0};
     
     bool        isEarthMapValid;
     bool        mustRedraw;

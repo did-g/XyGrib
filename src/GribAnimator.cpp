@@ -283,11 +283,11 @@ void GribAnimator::createImages()
 	int num=0;
 	// XXX hack, find if we have been destroyed by processEvents() loop
 	QPointer<GribAnimator> ref = this;
-
 	stackWidgets->setCurrentWidget(createAnimProgressBar);
     lbmessage->setFont(Font::getFont(FONT_StatusBar));
 	closestatus=0;
 	bool isEarthMapValid = false;
+	gribplot = terre->getGriddedPlotter () ; 
 	for (iter=gribplot->getListDates()->begin();
 				iter!=gribplot->getListDates()->end();   ++iter, num++)
 	{
@@ -312,8 +312,10 @@ void GribAnimator::createImages()
 		
 		img->date = date;
 		img->pixmap = drawer->createPixmap_GriddedData ( 
-								date, isEarthMapValid, 
-								gribplot,
+								date, isEarthMapValid,
+								terre->currentPlot,
+								terre->stack,
+								terre->griddedPlotMap,
 								proj,
 								lspois );
 		isEarthMapValid = true;

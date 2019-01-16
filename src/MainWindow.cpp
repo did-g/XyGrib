@@ -418,6 +418,10 @@ mb->acMap_SelectMETARs->setVisible (false);	// TODO
 
     connect(mb->acOptions_DarkSkin, SIGNAL(triggered(bool)), this, SLOT(slotChangeSkin(bool)));
 
+    connect(mb->acOptions_MergeMissing, SIGNAL(triggered(bool)), this, SLOT(slotChangeMissing(bool)));
+
+    //connect(mb->acOptions_StackGribs, SIGNAL(triggered(bool)), this, SLOT(slotChangeStack(bool)));
+    connect(mb->acOptions_StackGribs, SIGNAL(triggered(bool)), terre, SLOT(setStack(bool)));
     //-------------------------------------------------------
     connect(mb->acHelp_Help, SIGNAL(triggered()), this, SLOT(slotHelp_Help()));
     connect(mb->acHelp_APropos, SIGNAL(triggered()), this, SLOT(slotHelp_APropos()));
@@ -1929,6 +1933,14 @@ void MainWindow::slotChangeSkin(bool b)
     QMessageBox::information(this,tr("Change Skin"),
                              tr("For skin change to take effect XyGrib needs to be restarted"));
 
+}
+//-------------------------------------------------
+void MainWindow::slotChangeMissing(bool b)
+{
+}
+//-------------------------------------------------
+void MainWindow::slotChangeStack(bool b)
+{
 }
 //-------------------------------------------------
 void MainWindow::statusBar_showSelectedZone()

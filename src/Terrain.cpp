@@ -240,6 +240,15 @@ void Terrain::setProjection(Projection *proj)
 }
 
 //=========================================================
+void Terrain::setStack(bool b) {
+    if (stack != b) {
+        stack = b;
+        mustRedraw = true;
+        update();
+    }
+}
+
+//-------------------------------------------------------
 void Terrain::setDrawRivers(bool b) {
     if (drawer->showRivers != b) {
         drawer->showRivers = b;
@@ -1111,7 +1120,8 @@ void Terrain::paintEvent(QPaintEvent *)
         switch (currentFileType) {
 			case DATATYPE_GRIB :
 				drawer->draw_GSHHS_and_GriddedData 
-					(pnt, mustRedraw, isEarthMapValid, proj, griddedPlot, drawCartouche);
+					(pnt, mustRedraw, isEarthMapValid, proj,
+					 currentPlot, stack, griddedPlotMap, drawCartouche);
 				break;
 			default :
 				drawer->draw_GSHHS (pnt, mustRedraw, isEarthMapValid, proj);
@@ -1145,7 +1155,8 @@ void Terrain::paintEvent(QPaintEvent *)
         switch (currentFileType) {
 			case DATATYPE_GRIB :
 				drawer->draw_GSHHS_and_GriddedData 
-						(pnt, false, true, proj, griddedPlot);
+						(pnt, false, true, proj, 
+						currentPlot, stack, griddedPlotMap);
 				break;
 			default :
 				drawer->draw_GSHHS (pnt, mustRedraw, isEarthMapValid, proj);
@@ -1215,7 +1226,9 @@ QPixmap * Terrain::createPixmap (time_t date, int width, int height)
 					pixmap = scaleddrawer->createPixmap_GriddedData ( 
 										date, 
 										false, 
-										griddedPlot, 
+										currentPlot,
+										stack,
+										griddedPlotMap,
 										scaledproj, 
 										getListPOIs() );
 				}
@@ -1223,8 +1236,10 @@ QPixmap * Terrain::createPixmap (time_t date, int width, int height)
 			default :	// draw only map
 				pixmap = scaleddrawer->createPixmap_GriddedData ( 
 									date, 
-									false, 
-                                    nullptr,
+									false,
+									-100,
+									false,
+                                    griddedPlotMap,
 									scaledproj, 
 									getListPOIs() );
 		}

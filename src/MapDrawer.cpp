@@ -296,12 +296,19 @@ void MapDrawer::draw_GSHHS_and_GriddedData (
 			QPainter &pntGlobal,
 			bool mustRedraw, bool isEarthMapValid,
 			Projection *proj,
-			GriddedPlotter   *plotter,
+			int firstSlot,
+			bool stack,
+			std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap,
 			bool drawCartouche
 	)
 {
     if (mustRedraw  ||  !isEarthMapValid)
     {
+		GriddedPlotter   *plotter = nullptr;
+    	if (plotMap.find(firstSlot) != plotMap.end()) {
+    		plotter = plotMap[firstSlot].get();
+		}
+		assert(plotter != nullptr);
 		//===================================================
 		// Dessin du fond de carte
 		//===================================================
@@ -311,7 +318,19 @@ void MapDrawer::draw_GSHHS_and_GriddedData (
 		//===================================================
 		QPainter pnt (imgAll);
 		pnt.setRenderHint (QPainter::Antialiasing, true);
-		draw_MeteoData_Gridded (pnt, proj, plotter);
+		if (stack) {
+			time_t date = plotter->getCurrentDate ();
+			for (auto it = plotMap.find(firstSlot); it != plotMap.end(); ++it) {
+				auto ptr = it->second;
+				GriddedPlotter *p = ptr.get();
+				if (p) {
+					p->setCurrentDate (date);
+					draw_MeteoData_Gridded (pnt, proj, p);
+				}
+			}
+		}
+		else
+			draw_MeteoData_Gridded (pnt, proj, plotter);
 
 		//===================================================
 		// Dessin des bordures et frontières
@@ -830,8 +849,10 @@ void MapDrawer::draw_Cartouche_Gridded
 //===========================================================
 QPixmap * MapDrawer::createPixmap_GriddedData ( 
 						time_t date, 
-						bool isEarthMapValid, 
-						GriddedPlotter *plotter,
+						bool isEarthMapValid,
+						int firstSlot,
+						bool stack,
+						std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap,
 						Projection *proj,
 						const QList<POI*>& lspois )
 {
@@ -839,10 +860,13 @@ QPixmap * MapDrawer::createPixmap_GriddedData (
 
 	QPainter pnt;
 	pnt.begin (pixmap);
-	
+		GriddedPlotter   *plotter = nullptr;
+    	if (plotMap.find(firstSlot) != plotMap.end()) {
+    		plotter = plotMap[firstSlot].get();
+		}
 		if (plotter) {
 			plotter->setCurrentDate (date);
-			this->draw_GSHHS_and_GriddedData (pnt, true, isEarthMapValid, proj, plotter);
+			this->draw_GSHHS_and_GriddedData (pnt, true, isEarthMapValid, proj, firstSlot, stack, plotMap );
 		}
 		else {
 			this->draw_GSHHS (pnt, true, isEarthMapValid, proj);

@@ -132,6 +132,8 @@ public slots:
         void slotChangeFonts ();
 
         void slotChangeSkin (bool b);
+        void slotChangeMissing (bool b);
+        void slotChangeStack (bool b);
 
 		void slotShowDateChooser (bool b);
 		void slotShowColorScale (bool b);

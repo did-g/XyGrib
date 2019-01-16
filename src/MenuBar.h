@@ -311,6 +311,9 @@ public:
     QAction *acOptions_GraphicsParams;
     QAction *acOptions_Language;
 
+    QAction *acOptions_MergeMissing;
+    QAction *acOptions_StackGribs;
+
     QAction *acHelp_Help;
     QAction *acHelp_APropos;
     QAction *acCheckForUpdates;

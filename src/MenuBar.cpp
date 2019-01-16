@@ -421,6 +421,10 @@ MenuBar::MenuBar (QWidget *parent, bool mbe)
                         tr("Graphical parameters"), "Ctrl+G", "","");
     acOptions_PanSelectToggle = addActionCheck (menuOptions,
                         tr("Click to Pan"), "", "");
+        acOptions_MergeMissing = addActionCheck (menuOptions,
+                        tr("Merge missing grib (wave, current)"), "", "",tr(""));
+        acOptions_StackGribs = addActionCheck (menuOptions,
+                        tr("Stacks open gribs"), "", "",tr(""));
 		//----------------------------------------------------
 		QString lang = Util::getSetting("appLanguage", "").toString();
 		QString flagIconName = (lang == "") ? "" : Util::pathImg("drapeau_")+lang+".png";
