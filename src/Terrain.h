@@ -94,7 +94,8 @@ public:
     
     std::map<int, std::shared_ptr<GriddedPlotter>>griddedPlotMap{};
     int         currentPlot{0};
-    bool        stack;
+    bool        mergeMissing{false};
+    bool        stack{false};
 
 public slots :
     // Map
@@ -158,6 +159,7 @@ public slots :
     void setDrawLinesThetaE_Labels (bool);
     void setLinesThetaE_Step	    (double step);
     void setLinesThetaE_Altitude   (Altitude alt);
+    void setMergeMissing           (bool);
     void setStack                  (bool);
 	
     void slotTimerResize();
