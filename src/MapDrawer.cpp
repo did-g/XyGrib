@@ -298,7 +298,6 @@ void MapDrawer::draw_GSHHS_and_GriddedData (
 			Projection *proj,
 			int firstSlot,
 			bool stack,
-			bool missing,
 			std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap,
 			bool drawCartouche
 	)
@@ -319,9 +318,6 @@ void MapDrawer::draw_GSHHS_and_GriddedData (
 		//===================================================
 		QPainter pnt (imgAll);
 		pnt.setRenderHint (QPainter::Antialiasing, true);
-		showWaveOnly =false;
-		showCurrentOnly =false;
-
 		if (stack) {
 			time_t date = plotter->getCurrentDate ();
 			for (auto it = plotMap.find(firstSlot); it != plotMap.end(); ++it) {
@@ -332,27 +328,6 @@ void MapDrawer::draw_GSHHS_and_GriddedData (
 					draw_MeteoData_Gridded (pnt, proj, p);
 				}
 			}
-		}
-		else if (missing) {
-		
-			bool wave  = false;
-			time_t date = plotter->getCurrentDate ();
-			draw_MeteoData_Gridded (pnt, proj, plotter);
-			if ((showCurrentArrows || colorMapData.dataType == GRB_PRV_CUR_XY2D)
-				&& !plotter->hasDataType (GRB_CUR_VX)) { // or display map
-				for (auto it = plotMap.find(firstSlot); it != plotMap.end(); ++it) {
-					auto ptr = it->second;
-					GriddedPlotter *p = ptr.get();
-					if (p && p->hasDataType (GRB_CUR_VX)) {
-						p->setCurrentDate (date);
-						showCurrentOnly = true;
-						draw_MeteoData_Gridded (pnt, proj, p);
-						showCurrentOnly = false;
-						break;
-					}
-				}
-			}
-			wave = plotter->hasWaveDataType();
 		}
 		else
 			draw_MeteoData_Gridded (pnt, proj, plotter);
@@ -392,9 +367,7 @@ void MapDrawer::draw_MeteoData_Gridded
 			( QPainter &pnt, Projection *proj,
 			GriddedPlotter   *plotter )
 {
-	bool showAll = showCurrentOnly == false && showWaveOnly == false;
-	if (showAll)
-		setUsedDataCenters.clear ();
+	setUsedDataCenters.clear ();
 	plotter->draw_CoveredZone (pnt, proj);
 	
 	Altitude mapAltitude =  colorMapData.getAltitude ();
@@ -523,114 +496,110 @@ void MapDrawer::draw_MeteoData_Gridded
 			break;
 	}
 	
+	//-------------------------------------------------------
+	// draw complete colored map
+	//-------------------------------------------------------
+	plotter->draw_ColoredMapPlain (colorMapData, colorMapSmooth,pnt,proj);
+	addUsedDataCenterModel (colorMapData, plotter);
+	//-------------------------------------------------------
+
 	std::vector <IsoLine *> listIsobars;
 	std::vector <IsoLine *> listIsotherms0;
 	std::vector <IsoLine *> listGeopotential;
 	std::vector <IsoLine *> listIsotherms;
 	std::vector <IsoLine *> listLinesThetaE;
 
-	if (showAll || (showCurrentOnly && colorMapData.dataType == GRB_PRV_CUR_XY2D)) {
-		//-------------------------------------------------------
-		// draw complete colored map
-		//-------------------------------------------------------
-		plotter->draw_ColoredMapPlain (colorMapData, colorMapSmooth,pnt,proj);
-		addUsedDataCenterModel (colorMapData, plotter);
+	if (! plotter->hasData (GRB_PRESSURE_MSL,LV_MSL,0)) {
+		if (! plotter->hasData (GRB_PRESSURE, LV_GND_SURF,0))
+			showIsobars = false;
 	}
 
-	if (showAll) {
-		if (! plotter->hasData (GRB_PRESSURE_MSL,LV_MSL,0)) {
-			if (! plotter->hasData (GRB_PRESSURE, LV_GND_SURF,0))
-				showIsobars = false;
+	if (! plotter->hasData (GRB_GEOPOT_HGT,LV_ISOTHERM0,0))
+		showIsotherms0 = false;
+	if (! plotter->hasData (geopotentialData))
+		showGeopotential = false;
+	if (! plotter->hasData (GRB_TEMP,isothermsAltitude))
+		showIsotherms = false;
+	if (! plotter->hasData (GRB_PRV_THETA_E,linesThetaEAltitude))
+		showLinesThetaE = false;
+
+	if (showIsobars) {
+		pnt.setPen (isobarsPen);
+		DataCode dtc (GRB_PRESSURE_MSL,LV_MSL,0);
+		if (! plotter->hasData (dtc)) {
+			dtc = {GRB_PRESSURE, LV_GND_SURF,0};
 		}
-
-		if (! plotter->hasData (GRB_GEOPOT_HGT,LV_ISOTHERM0,0))
-			showIsotherms0 = false;
-		if (! plotter->hasData (geopotentialData))
-			showGeopotential = false;
-		if (! plotter->hasData (GRB_TEMP,isothermsAltitude))
-			showIsotherms = false;
-		if (! plotter->hasData (GRB_PRV_THETA_E,linesThetaEAltitude))
-			showLinesThetaE = false;
-
-		if (showIsobars) {
-			pnt.setPen (isobarsPen);
-			DataCode dtc (GRB_PRESSURE_MSL,LV_MSL,0);
-			if (! plotter->hasData (dtc)) {
-				dtc = {GRB_PRESSURE, LV_GND_SURF,0};
-			}
-			addUsedDataCenterModel (dtc, plotter);
-			plotter->complete_listIsolines (&listIsobars, dtc,
+		addUsedDataCenterModel (dtc, plotter);
+		plotter->complete_listIsolines (&listIsobars, dtc,
 						   84000, 112000, isobarsStep*100, proj);
-	        plotter->draw_listIsolines (listIsobars, pnt,proj);
-		}
+        plotter->draw_listIsolines (listIsobars, pnt,proj);
+	}
 
-		if (showIsotherms0) {
-			pnt.setPen (isotherms0Pen);
-			DataCode dtc (GRB_GEOPOT_HGT,LV_ISOTHERM0,0);
-			addUsedDataCenterModel (dtc, plotter);
-			plotter->complete_listIsolines (&listIsotherms0, dtc,
+	if (showIsotherms0) {
+		pnt.setPen (isotherms0Pen);
+		DataCode dtc (GRB_GEOPOT_HGT,LV_ISOTHERM0,0);
+		addUsedDataCenterModel (dtc, plotter);
+		plotter->complete_listIsolines (&listIsotherms0, dtc,
 						   0, 15000, isotherms0Step, proj);
-			plotter->draw_listIsolines (listIsotherms0, pnt,proj);
-		}
+        plotter->draw_listIsolines (listIsotherms0, pnt,proj);
+	}
 
-		if (showGeopotential) {
-    	    pnt.setPen (geopotentialsPen);
-    	    addUsedDataCenterModel(geopotentialData, plotter);
-			plotter->complete_listIsolines (&listGeopotential,
+	if (showGeopotential) {
+        pnt.setPen (geopotentialsPen);
+        addUsedDataCenterModel(geopotentialData, plotter);
+		plotter->complete_listIsolines (&listGeopotential,
 						   geopotentialData,
 						   geopotentialMin, geopotentialMax, geopotentialStep, proj);
-    	    plotter->draw_listIsolines (listGeopotential, pnt,proj);
-		}
+        plotter->draw_listIsolines (listGeopotential, pnt,proj);
+	}
 	
-		if (showIsotherms) {
-			pnt.setPen (isotherms_Pen);
-			DataCode dtc (GRB_TEMP,isothermsAltitude);
-			addUsedDataCenterModel (dtc, plotter);
-			plotter->complete_listIsolines (&listIsotherms, dtc,
+	if (showIsotherms) {
+		pnt.setPen (isotherms_Pen);
+		DataCode dtc (GRB_TEMP,isothermsAltitude);
+		addUsedDataCenterModel (dtc, plotter);
+		plotter->complete_listIsolines (&listIsotherms, dtc,
 						   -140+273.15, 80+273.15, isotherms_Step, proj);
-			plotter->draw_listIsolines (listIsotherms, pnt,proj);
-		}
+        plotter->draw_listIsolines (listIsotherms, pnt,proj);
+	}
 	
-		if (showLinesThetaE) {
-			pnt.setPen (linesThetaE_Pen);
-			DataCode dtc (GRB_PRV_THETA_E,linesThetaEAltitude);
-			addUsedDataCenterModel (dtc, plotter);
-			plotter->complete_listIsolines (&listLinesThetaE, dtc,
+	if (showLinesThetaE) {
+		pnt.setPen (linesThetaE_Pen);
+		DataCode dtc (GRB_PRV_THETA_E,linesThetaEAltitude);
+		addUsedDataCenterModel (dtc, plotter);
+		plotter->complete_listIsolines (&listLinesThetaE, dtc,
 						   -80+273.15, 140+273.15, linesThetaE_Step, proj);
-			plotter->draw_listIsolines (listLinesThetaE, pnt,proj);
-		}
+        plotter->draw_listIsolines (listLinesThetaE, pnt,proj);
 	}
 
-	if (!showCurrentOnly && showWaveArrowsType != GRB_TYPE_NOT_DEFINED && hasWaveForArrows) {
+	if (showWaveArrowsType != GRB_TYPE_NOT_DEFINED && hasWaveForArrows) {
 		plotter->draw_WAVES_Arrows (showWaveArrowsType, pnt, proj);
 	}
 	
-	if (showAll && showWindArrows && hasWindForArrows) {
+	if (showWindArrows && hasWindForArrows) {
 		plotter->draw_WIND_Arrows (windArrowsAltitude, showBarbules, windArrowsColor, pnt, proj);
 	}
-
-	if (!showWaveOnly && showCurrentArrows && hasCurrentForArrows) {
+	if (showCurrentArrows && hasCurrentForArrows) {
 		plotter->draw_CURRENT_Arrows (currentArrowsAltitude, currentArrowsColor, pnt, proj);
 	}
 
-	if (showAll && showIsobarsLabels && showIsobars) {
+	if (showIsobarsLabels && showIsobars) {
 		QColor color (40,40,40);
         plotter->draw_listIsolines_labels (listIsobars, 0.01,0, color, pnt,proj);
 	}
-	if (showAll && showIsotherms0Labels && showIsotherms0) {
+	if (showIsotherms0Labels && showIsotherms0) {
 		QColor color(200,80,80);
 		DataCode dtc (GRB_GEOPOT_HGT,LV_ISOTHERM0,0);
 		addUsedDataCenterModel (dtc, plotter);
 		double coef = Util::getDataCoef (dtc);
         plotter->draw_listIsolines_labels (listIsotherms0, coef,0, color, pnt,proj);
 	}
-	if (showAll && showGeopotentialLabels && showGeopotential) {
+	if (showGeopotentialLabels && showGeopotential) {
         QColor color(200,80,80);
 		addUsedDataCenterModel (geopotentialData, plotter);
 		double coef = Util::getDataCoef (geopotentialData);
         plotter->draw_listIsolines_labels (listGeopotential, coef,0, color, pnt,proj);
 	}
-	if (showAll && showIsotherms_Labels && showIsotherms) {
+	if (showIsotherms_Labels && showIsotherms) {
 		QColor color(40,40,150); 
         plotter->draw_listIsolines_labels (listIsotherms,
 										1.,-273.15,
@@ -638,7 +607,7 @@ void MapDrawer::draw_MeteoData_Gridded
 										16	// TODO: labels density
 										);
 	} 
-	if (showAll && showLinesThetaE_Labels && showLinesThetaE) {
+	if (showLinesThetaE_Labels && showLinesThetaE) {
 		QColor color(40,40,150); 
         plotter->draw_listIsolines_labels (listLinesThetaE,
 										1.,-273.15,
@@ -647,7 +616,7 @@ void MapDrawer::draw_MeteoData_Gridded
 										);
 	} 
 
-	if (showAll && showPressureMinMax) {
+	if (showPressureMinMax) {
 		DataCode dtc (GRB_PRESSURE_MSL,LV_MSL,0);
 		addUsedDataCenterModel (dtc, plotter);
 		plotter->draw_DATA_MinMax ( 
@@ -655,7 +624,7 @@ void MapDrawer::draw_MeteoData_Gridded
 						Font::getFont(FONT_GRIB_PressHL),
 						QColor(0,0,0), pnt, proj);
 	}
-	if (showAll && showTemperatureLabels ) {
+	if (showTemperatureLabels ) {
 		auto dataType = colorMapData.dataType == GRB_WTMP?GRB_WTMP:GRB_TEMP;
 
 		DataCode dtc (dataType, temperatureLabelsAlt);
@@ -671,7 +640,7 @@ void MapDrawer::draw_MeteoData_Gridded
 	//===================================================
 	// Grille
 	//===================================================
-	if (showAll && showGribGrid) {
+	if (showGribGrid) {
 		pnt.setPen(QColor (40,40,40));
 		plotter->draw_GridPoints (colorMapData, pnt, proj);
 	}
@@ -883,7 +852,6 @@ QPixmap * MapDrawer::createPixmap_GriddedData (
 						bool isEarthMapValid,
 						int firstSlot,
 						bool stack,
-						bool missing,
 						std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap,
 						Projection *proj,
 						const QList<POI*>& lspois )
@@ -898,7 +866,7 @@ QPixmap * MapDrawer::createPixmap_GriddedData (
 		}
 		if (plotter) {
 			plotter->setCurrentDate (date);
-			this->draw_GSHHS_and_GriddedData (pnt, true, isEarthMapValid, proj, firstSlot, stack, missing, plotMap );
+			this->draw_GSHHS_and_GriddedData (pnt, true, isEarthMapValid, proj, firstSlot, stack, plotMap );
 		}
 		else {
 			this->draw_GSHHS (pnt, true, isEarthMapValid, proj);

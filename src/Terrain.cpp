@@ -247,14 +247,7 @@ void Terrain::setStack(bool b) {
         update();
     }
 }
-//-------------------------------------------------------
-void Terrain::setMergeMissing(bool b) {
-    if (mergeMissing != b) {
-        mergeMissing = b;
-        mustRedraw = true;
-        update();
-    }
-}
+
 //-------------------------------------------------------
 void Terrain::setDrawRivers(bool b) {
     if (drawer->showRivers != b) {
@@ -1128,7 +1121,7 @@ void Terrain::paintEvent(QPaintEvent *)
 			case DATATYPE_GRIB :
 				drawer->draw_GSHHS_and_GriddedData 
 					(pnt, mustRedraw, isEarthMapValid, proj,
-					 currentPlot, stack, mergeMissing, griddedPlotMap, drawCartouche);
+					 currentPlot, stack, griddedPlotMap, drawCartouche);
 				break;
 			default :
 				drawer->draw_GSHHS (pnt, mustRedraw, isEarthMapValid, proj);
@@ -1163,7 +1156,7 @@ void Terrain::paintEvent(QPaintEvent *)
 			case DATATYPE_GRIB :
 				drawer->draw_GSHHS_and_GriddedData 
 						(pnt, false, true, proj, 
-						currentPlot, stack, mergeMissing, griddedPlotMap);
+						currentPlot, stack, griddedPlotMap);
 				break;
 			default :
 				drawer->draw_GSHHS (pnt, mustRedraw, isEarthMapValid, proj);
@@ -1235,7 +1228,6 @@ QPixmap * Terrain::createPixmap (time_t date, int width, int height)
 										false, 
 										currentPlot,
 										stack,
-										mergeMissing,
 										griddedPlotMap,
 										scaledproj, 
 										getListPOIs() );
@@ -1246,7 +1238,6 @@ QPixmap * Terrain::createPixmap (time_t date, int width, int height)
 									date, 
 									false,
 									-100,
-									false,
 									false,
                                     griddedPlotMap,
 									scaledproj, 

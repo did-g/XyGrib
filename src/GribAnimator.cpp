@@ -315,7 +315,6 @@ void GribAnimator::createImages()
 								date, isEarthMapValid,
 								terre->currentPlot,
 								terre->stack,
-								terre->mergeMissing,
 								terre->griddedPlotMap,
 								proj,
 								lspois );

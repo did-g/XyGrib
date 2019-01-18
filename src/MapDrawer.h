@@ -59,7 +59,6 @@ friend class Terrain;	// TODO (or not) getters setters
 				Projection *proj,
 				int firstSlot,
 				bool stack,
-				bool missing,
 				std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap,
 				bool drawCartouche = true
 			);
@@ -86,7 +85,6 @@ friend class Terrain;	// TODO (or not) getters setters
 						bool isEarthMapValid, 
 						int firstSlot,
 						bool stack,
-						bool missing,
 						std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap,
 						Projection *proj,
 						const QList<POI*>& lspois );
@@ -146,11 +144,8 @@ friend class Terrain;	// TODO (or not) getters setters
 		bool  showGribGrid;
 		bool  showBarbules;
 
-		bool  showCurrentOnly{false};
 		bool  showCurrentArrows;
 		bool  hasCurrentForArrows;
-
-		bool  showWaveOnly{false};
 		int   showWaveArrowsType;
 		bool  hasWaveForArrows;
 		

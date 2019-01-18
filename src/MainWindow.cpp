@@ -418,8 +418,7 @@ mb->acMap_SelectMETARs->setVisible (false);	// TODO
 
     connect(mb->acOptions_DarkSkin, SIGNAL(triggered(bool)), this, SLOT(slotChangeSkin(bool)));
 
-    //connect(mb->acOptions_MergeMissing, SIGNAL(triggered(bool)), this, SLOT(slotChangeMissing(bool)));
-    connect(mb->acOptions_MergeMissing, SIGNAL(triggered(bool)), terre, SLOT(setMergeMissing(bool)));
+    connect(mb->acOptions_MergeMissing, SIGNAL(triggered(bool)), this, SLOT(slotChangeMissing(bool)));
 
     //connect(mb->acOptions_StackGribs, SIGNAL(triggered(bool)), this, SLOT(slotChangeStack(bool)));
     connect(mb->acOptions_StackGribs, SIGNAL(triggered(bool)), terre, SLOT(setStack(bool)));
@@ -985,22 +984,7 @@ void MainWindow::setMenubarItems()
 	// Common actions to all gridded data file
 	//------------------------------------------------------
 	// Sea current
-	bool current = plotter->hasDataType (GRB_CUR_VX);
-    if (current == false && terre->mergeMissing) {
-        // current down the stack?
-        int firstSlot = terre->currentPlot;
-        std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap = terre->griddedPlotMap;
-
-        for (auto it = plotMap.find(firstSlot); current == false && it != plotMap.end(); ++it) 
-        {
-            auto ptr = it->second;
-			GriddedPlotter *p = ptr.get();
-			if (p)
-			    current = p->hasDataType (GRB_CUR_VX);
-		}
-    }
-
-	if (current) {
+	if (plotter->hasDataType (GRB_CUR_VX)) {
     	menuBar->acView_CurrentColors->setEnabled(true);
     	menuBar->acView_CurrentArrow->setEnabled(true);
     	menuBar->acView_CurrentArrowsOnGribGrid->setEnabled(true);
@@ -1015,34 +999,20 @@ void MainWindow::setMenubarItems()
 
 	if (plotter->hasDataType (GRB_WTMP))  menuBar->acView_WaterTempColors->setEnabled(true);
 	// Waves
-	bool wave = plotter->hasWaveDataType();
-    if (wave == false && terre->mergeMissing) {
-        // wave down the stack?
-        int firstSlot = terre->currentPlot;
-        std::map<int, std::shared_ptr<GriddedPlotter>>	plotMap = terre->griddedPlotMap;
-
-        for (auto it = plotMap.find(firstSlot); current == false && it != plotMap.end(); ++it) 
-        {
-            auto ptr = it->second;
-			GriddedPlotter *p = ptr.get();
-			if (p)
-			    current = plotter->hasWaveDataType();
-		}
-    }
-	if (wave) {
-    	if (plotter->hasWaveDataType (GRB_WAV_SIG_HT)) menuBar->acView_SigWaveHeight->setEnabled (true);
-    	if (plotter->hasWaveDataType (GRB_WAV_MAX_HT)) menuBar->acView_MaxWaveHeight->setEnabled (true);
-    	if (plotter->hasWaveDataType (GRB_WAV_WHITCAP_PROB)) menuBar->acView_WhiteCapProb->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_SIG_HT)) menuBar->acView_SigWaveHeight->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_MAX_HT)) menuBar->acView_MaxWaveHeight->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_WHITCAP_PROB)) menuBar->acView_WhiteCapProb->setEnabled (true);
+	if (plotter->hasWaveDataType ()) {
 	    menuBar->menuWavesArrows->setEnabled (true);
 	    menuBar->acView_DuplicateMissingWaveRecords->setEnabled (true);
 	    menuBar->acView_WavesArrows_none->setEnabled (true);
-	    if (plotter->hasWaveDataType (GRB_WAV_DIR)) menuBar->acView_WavesArrows_sig->setEnabled (true);
-	    if (plotter->hasWaveDataType (GRB_WAV_MAX_DIR)) menuBar->acView_WavesArrows_max->setEnabled (true);
-	    if (plotter->hasWaveDataType (GRB_WAV_SWL_DIR)) menuBar->acView_WavesArrows_swell->setEnabled (true);
-	    if (plotter->hasWaveDataType (GRB_WAV_WND_DIR)) menuBar->acView_WavesArrows_wind->setEnabled (true);
-	    if (plotter->hasWaveDataType (GRB_WAV_PRIM_DIR)) menuBar->acView_WavesArrows_prim->setEnabled (true);
-	    if (plotter->hasWaveDataType (GRB_WAV_SCDY_DIR)) menuBar->acView_WavesArrows_scdy->setEnabled (true);
     }
+	if (plotter->hasWaveDataType (GRB_WAV_DIR)) menuBar->acView_WavesArrows_sig->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_MAX_DIR)) menuBar->acView_WavesArrows_max->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_SWL_DIR)) menuBar->acView_WavesArrows_swell->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_WND_DIR)) menuBar->acView_WavesArrows_wind->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_PRIM_DIR)) menuBar->acView_WavesArrows_prim->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_SCDY_DIR)) menuBar->acView_WavesArrows_scdy->setEnabled (true);
 }
 
 //-------------------------------------------------
