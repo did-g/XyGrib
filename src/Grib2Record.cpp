@@ -667,6 +667,8 @@ int Grib2Record::analyseProductType ()
                 return GRB_GEOPOT_HGT;
             else if (paramnumber==6)
                 return GRB_GEOPOT_HGT; // david, use DIST geometric height as geopotential height (icon hzerocl)
+			if (paramnumber==192)
+				return GRB_PRESSURE_MSL; // NOAA  MSLET
         }
 		else if (paramcat==6) {//TABLE 4.2-0-6
 			if (paramnumber==1)
