@@ -147,7 +147,7 @@ class BoardPanel : public QDockWidget
 		QLabel     lbWaves_wnd;	
 		QLabel     lbWaves_pri;	
 		QLabel     lbWaves_sec;	
-		//QLabel     lbWaves_pek;	
+		QLabel     lbWaves_peak;
 		QLabel     lbWaves_wcap;	
 		
         QString  formatWave (const QString &title, float ht, float dir, float per);

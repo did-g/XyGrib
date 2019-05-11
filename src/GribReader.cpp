@@ -344,6 +344,7 @@ bool GribReader::checkAndStoreRecordInMap (GribRecord *rec)
 					|| rec->getDataType()==GRB_WAV_MAX_PER
 					|| rec->getDataType()==GRB_WAV_MAX_DIR
 					|| rec->getDataType()==GRB_WAV_MAX_HT
+					|| rec->getDataType()==GRB_WAV_PEAK_WPER
 				))
 			)
 		)
@@ -748,6 +749,7 @@ void  GribReader::copyMissingWaveRecords ()
 	copyMissingWaveRecords (DataCode(GRB_WAV_MAX_DIR,LV_GND_SURF,0));
 	copyMissingWaveRecords (DataCode(GRB_WAV_MAX_PER,LV_GND_SURF,0));
 	copyMissingWaveRecords (DataCode(GRB_WAV_MAX_HT,LV_GND_SURF,0));
+	copyMissingWaveRecords (DataCode(GRB_WAV_PEAK_WPER,LV_GND_SURF,0));
 }
 //---------------------------------------------------------------------------------
 void  GribReader::removeMissingWaveRecords ()

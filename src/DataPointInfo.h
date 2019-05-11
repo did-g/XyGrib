@@ -157,6 +157,7 @@ class DataPointInfo
         float   wave_max_per;
         float   wave_max_dir;
         
+        float   wave_peak_per;
 		
 	private:
 

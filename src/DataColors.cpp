@@ -44,6 +44,7 @@ DataColors::DataColors ()
 	colors_DeltaTemp.readFile (Util::pathColors()+"colors_deltatemp_celcius.txt", 1, 0);
 	colors_Binary.readFile (Util::pathColors()+"colors_binary.txt", 1, 0);
 	colors_WaveHeight.readFile (Util::pathColors()+"colors_waveheight_m.txt", 1, 0);
+	colors_WavePeriod.readFile (Util::pathColors()+"colors_waveperiod_s.txt", 1, 0);
 	colors_WhiteCap.readFile (Util::pathColors()+"colors_whitecap_prb.txt", 1, 0);
 	colors_ThetaE.readFile (Util::pathColors()+"colors_thetae_celcius.txt", 1, 273.15);
 	//test
@@ -122,6 +123,10 @@ QRgb  DataColors::getBinaryColor (double v, bool smooth) {
 //--------------------------------------------------------------------------
 QRgb  DataColors::getWaveHeightColor (double v, bool smooth) {
 	return colors_WaveHeight.getColor (v, smooth);
+}
+//--------------------------------------------------------------------------
+QRgb  DataColors::getWavePeriodColor (double v, bool smooth) {
+	return colors_WavePeriod.getColor (v, smooth);
 }
 //--------------------------------------------------------------------------
 QRgb  DataColors::getWhiteCapColor (double v, bool smooth) {
@@ -227,6 +232,7 @@ auto DataColors::getFunctionColor(const DataCode &dtc) -> QRgb (DataColors::*)(d
 		case GRB_CAPE :          return &DataColors::getCAPEColor;
 		case GRB_CIN :           return &DataColors::getCINColor;
         case GRB_COMP_REFL :     return &DataColors::getReflectColor;
+		case GRB_WAV_PEAK_WPER : return &DataColors::getWavePeriodColor;
 		case GRB_WAV_SIG_HT :
 		case GRB_WAV_MAX_HT :
 			return &DataColors::getWaveHeightColor;
@@ -305,6 +311,8 @@ ColorScale *DataColors::getColorScale (const DataCode &dtc)
         case GRB_WAV_SIG_HT :
 		case GRB_WAV_MAX_HT :
 			return &colors_WaveHeight;
+		case GRB_WAV_PEAK_WPER :
+			return &colors_WavePeriod;
 		case GRB_WAV_WHITCAP_PROB :
 			return  &colors_WhiteCap;
 			break;

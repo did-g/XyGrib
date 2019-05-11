@@ -432,6 +432,8 @@ void GribPlot::draw_ColoredMapPlain (
 		case GRB_PRV_THETA_E :
 		case GRB_WAV_SIG_HT :
 		case GRB_WAV_MAX_HT :
+		case GRB_WAV_MAX_PER :
+		case GRB_WAV_PEAK_WPER :
 		case GRB_WAV_WHITCAP_PROB :
 		case GRB_WIND_SPEED :
 		case GRB_CUR_SPEED :

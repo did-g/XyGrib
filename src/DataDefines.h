@@ -129,6 +129,7 @@ enum {
  GRB_WAV_MAX_DIR   =207,   /* deg */
  GRB_WAV_MAX_PER   =208,   /* s */
  GRB_WAV_MAX_HT    =220,   /* m */
+ GRB_WAV_PEAK_WPER = 221,  /* s */
 
  GRB_PRV_WAV_SIG    =242,   /* private: all parameter */
  GRB_PRV_WAV_MAX    =243,   /* private: all parameter */

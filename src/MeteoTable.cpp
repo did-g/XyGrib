@@ -559,6 +559,10 @@ int MeteoTableDialog::SYLK_addData_gen (SylkFile &slk, int lig,int col, DataCode
 				case GRB_WAV_SIG_HT : 
 					txt = Util::formatWaveHeight (val, false); 
 					break;
+				case GRB_WAV_PEAK_WPER :
+					txt = Util::formatWavePeriod (val, false);
+					break;
+
 			}
 			slk.addCell (lig, row, txt);
 		}

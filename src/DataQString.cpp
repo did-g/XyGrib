@@ -239,6 +239,7 @@ QString DataCodeStr::toString_name (const DataCode &dtc)
 		case GRB_WAV_MAX_DIR   : return tr("Maximum wave direction");
 		case GRB_WAV_MAX_HT    : return tr("Maximum wave height");
 		case GRB_WAV_MAX_PER   : return tr("Maximum wave period");
+		case GRB_WAV_PEAK_WPER : return tr("Peak wave period");
 		case GRB_WAV_WHITCAP_PROB  : return tr("Whitecap probability");
 		
 		case GRB_PRV_WAV_SIG   : return tr("Wind waves and swell");

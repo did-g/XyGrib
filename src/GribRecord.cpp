@@ -547,6 +547,7 @@ void  GribRecord::translateDataType ()
 			case GRB_WAV_MAX_DIR:
 			case GRB_WAV_MAX_PER:
 			case GRB_WAV_MAX_HT:
+			case GRB_WAV_PEAK_WPER:
 				waveData = true;
 				levelType  = LV_GND_SURF;
 				levelValue = 0;

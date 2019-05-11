@@ -230,6 +230,7 @@ class MeteoTableWidget : public QWidget
 		void  addLine_GeopotentialAltitude  (const Altitude &alt, int lig);
 
 		void  addLine_WaveHeight (int type, int lig);
+		void  addLine_WavePeriod (int type, int lig);
 		void  addLine_WaveWhitecap (int type, int lig);
 		void  addLine_WaveCompleteCell (int prvtype, int lig);
 		

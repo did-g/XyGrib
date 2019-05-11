@@ -365,6 +365,7 @@ MenuBar::MenuBar (QWidget *parent, bool mbe)
 		acView_WaterTempColors = addActionCheck (menuSeaState, tr("Water temperature"), "", "");
 		acView_SigWaveHeight = addActionCheck (menuSeaState, tr("Significant wave height"), "", "");
 		acView_MaxWaveHeight = addActionCheck (menuSeaState, tr("Maximum wave height"), "", "");
+		acView_PeakWavePeriod = addActionCheck (menuSeaState, tr("Peak wave period"), "", "");
 		acView_WhiteCapProb = addActionCheck (menuSeaState, tr("Whitecap probability"), "", "");
 		menuWavesArrows = new QMenu (tr("Waves arrows"));
 			acView_WavesArrows_none = addActionCheck (menuWavesArrows, tr("None"), "", "");
@@ -399,6 +400,7 @@ MenuBar::MenuBar (QWidget *parent, bool mbe)
 		acView_GroupColorMap->addAction (acView_WaterTempColors);
 		acView_GroupColorMap->addAction (acView_SigWaveHeight);
 		acView_GroupColorMap->addAction (acView_MaxWaveHeight);
+		acView_GroupColorMap->addAction (acView_PeakWavePeriod);
 		acView_GroupColorMap->addAction (acView_WhiteCapProb);
     //======================================================================
     menuOptions = new QMenu(tr("Options"));

@@ -431,6 +431,7 @@ QString Util::getDataUnit (const DataCode &dtc)
 		case GRB_WAV_MAX_PER : 
 		case GRB_WAV_PRIM_PER : 
 		case GRB_WAV_SCDY_PER : 
+		case GRB_WAV_PEAK_WPER :
 			return tr("s");
 		case GRB_WAV_WHITCAP_PROB : 
 			return tr("%");

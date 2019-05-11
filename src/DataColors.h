@@ -59,6 +59,7 @@ class DataColors    // inherited by GriddedPlotter
 		QRgb   getCloudColor   (double v, bool smooth);
 		QRgb   getBinaryColor  (double v, bool smooth);
         QRgb   getWaveHeightColor    (double v, bool smooth);
+        QRgb   getWavePeriodColor    (double v, bool smooth);
         QRgb   getWhiteCapColor    (double v, bool smooth);
         QRgb   getThetaEColor    (double v, bool smooth);
 
@@ -87,6 +88,7 @@ class DataColors    // inherited by GriddedPlotter
 		ColorScale colors_DeltaTemp;
 		ColorScale colors_Binary;
 		ColorScale colors_WaveHeight;
+		ColorScale colors_WavePeriod;
 		ColorScale colors_WhiteCap;
 		ColorScale colors_ThetaE;
 

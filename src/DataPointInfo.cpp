@@ -74,6 +74,7 @@ DataPointInfo::DataPointInfo (GriddedReader *reader,
 	wave_pr_per = getValue(DataCode(GRB_WAV_PRIM_PER,LV_GND_SURF,0));
 	wave_scdy_per = getValue(DataCode(GRB_WAV_SCDY_PER,LV_GND_SURF,0));
 	wave_max_per = getValue(DataCode(GRB_WAV_MAX_PER,LV_GND_SURF,0));
+	wave_peak_per = getValue(DataCode(GRB_WAV_PEAK_WPER,LV_GND_SURF,0));
 
 	wave_dir     = getValue(DataCode(GRB_WAV_DIR,LV_GND_SURF,0));
 	wave_wnd_dir = getValue(DataCode(GRB_WAV_WND_DIR,LV_GND_SURF,0));
@@ -375,6 +376,8 @@ float DataPointInfo::getDataValue (const DataCode &dtc) const
 				return wave_max_dir;
 		case GRB_WAV_MAX_PER:
 				return wave_max_per;
+		case GRB_WAV_PEAK_WPER:
+				return wave_peak_per;
 		case GRB_WAV_MAX_HT:
 				return wave_max_ht;
 		//-----------------------------------

@@ -260,10 +260,12 @@ void BoardPanel::showDataPointInfo (
 		lbWaves_max.setText (formatWave(tr("max  :","Tr: VERY SHORT TAG, same size as 'swell' translation: maximum"),pf.wave_max_ht, pf.wave_max_dir, pf.wave_max_per));
 		lbWaves_swl.setText (formatWave(tr("swell:","Tr: VERY SHORT TAG: swell"),pf.wave_swl_ht, pf.wave_swl_dir, pf.wave_swl_per));
 		lbWaves_wnd.setText (formatWave(tr("wind :","Tr: VERY SHORT TAG, same size as 'swell' translation: wind"),pf.wave_wnd_ht, pf.wave_wnd_dir, pf.wave_wnd_per));
+		lbWaves_peak.setText(formatWave(tr("peak :","Tr: VERY SHORT TAG, same size as 'swell' translation: peak"),GRIB_NOTDEF, GRIB_NOTDEF, pf.wave_peak_per));
 		
 		lbWaves_pri.setText (formatWave(tr("prim :","Tr: VERY SHORT TAG, same size as 'swell' translation: primary"),GRIB_NOTDEF, pf.wave_pr_dir, pf.wave_pr_per));
 		lbWaves_sec.setText (formatWave(tr("scdy :","Tr: VERY SHORT TAG, same size as 'swell' translation: secondary"),GRIB_NOTDEF, pf.wave_scdy_dir, pf.wave_scdy_per));
 		
+
 		QString s;
 		if (GribDataIsDef(pf.wave_wcap_prbl)) {
 			s = tr("whitecap (prob)","Tr: SHORT TAG")+QString(": %1").arg(Util::formatWhiteCap (pf.wave_wcap_prbl,true));
@@ -490,9 +492,9 @@ void BoardPanel::updateLabelsSizes()
 	lbWaves_max.setFont (fontAlt);
 	lbWaves_swl.setFont (fontAlt);
 	lbWaves_wnd.setFont (fontAlt);
+ 	lbWaves_peak.setFont (fontAlt);
 	lbWaves_pri.setFont (fontAlt);
 	lbWaves_sec.setFont (fontAlt);
-// 	lbWaves_pek.setFont (fontAlt);
 	lbWaves_wcap.setFont (fontAlt);
  }
 
@@ -757,10 +759,10 @@ void BoardPanel::createInterface ()
 		vlay->addWidget (&lbWaves_max);
 		vlay->addWidget (&lbWaves_swl);
 		vlay->addWidget (&lbWaves_wnd);
+		vlay->addWidget (&lbWaves_peak);
 		
 		vlay->addWidget (&lbWaves_pri);
 		vlay->addWidget (&lbWaves_sec);
-// 		vlay->addWidget (&lbWaves_pek);
 		
 		vlay->addWidget (&lbWaves_wcap);
         vlay->setSpacing(2);

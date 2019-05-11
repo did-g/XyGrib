@@ -323,6 +323,7 @@ void DialogMeteotableOptions::createDataLists()
 	type = GRB_PRV_WAV_SWL; addData (tr("Waves")+": "+DataCodeStr::toString(type), type,LV_GND_SURF,0, defaultvis,defaultpos++);
 	type = GRB_PRV_WAV_PRIM; addData (tr("Waves")+": "+DataCodeStr::toString(type), type,LV_GND_SURF,0, defaultvis,defaultpos++);
 	type = GRB_PRV_WAV_SCDY; addData (tr("Waves")+": "+DataCodeStr::toString(type), type,LV_GND_SURF,0, defaultvis,defaultpos++);
+	type = GRB_WAV_PEAK_WPER; addData (tr("Waves")+": "+DataCodeStr::toString(type), type,LV_GND_SURF,0, defaultvis,defaultpos++);
 	type = GRB_WAV_WHITCAP_PROB; addData (tr("Waves")+": "+DataCodeStr::toString(type), type,LV_GND_SURF,0, defaultvis,defaultpos++);
     //----------------------------------
 

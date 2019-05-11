@@ -801,6 +801,8 @@ void MainWindow::disableMenubarItems()
 	// Waves
 	menuBar->acView_SigWaveHeight->setEnabled (false);
 	menuBar->acView_MaxWaveHeight->setEnabled (false);
+	menuBar->acView_PeakWavePeriod->setEnabled (false);
+
 	menuBar->acView_WhiteCapProb->setEnabled (false);
     menuBar->menuWavesArrows->setEnabled (false);
     menuBar->acView_DuplicateMissingWaveRecords->setEnabled (false);
@@ -1001,6 +1003,7 @@ void MainWindow::setMenubarItems()
 	// Waves
 	if (plotter->hasWaveDataType (GRB_WAV_SIG_HT)) menuBar->acView_SigWaveHeight->setEnabled (true);
 	if (plotter->hasWaveDataType (GRB_WAV_MAX_HT)) menuBar->acView_MaxWaveHeight->setEnabled (true);
+	if (plotter->hasWaveDataType (GRB_WAV_PEAK_WPER)) menuBar->acView_PeakWavePeriod->setEnabled (true);
 	if (plotter->hasWaveDataType (GRB_WAV_WHITCAP_PROB)) menuBar->acView_WhiteCapProb->setEnabled (true);
 	if (plotter->hasWaveDataType ()) {
 	    menuBar->menuWavesArrows->setEnabled (true);
@@ -2112,6 +2115,9 @@ void MainWindow::setMenubarColorMapData (const DataCode &dtc, bool trigAction)
 		case GRB_WAV_SIG_HT :
 			act = mb->acView_SigWaveHeight;
 			break;
+        case GRB_WAV_PEAK_WPER:
+            act = mb->acView_PeakWavePeriod;
+            break;
 		case GRB_WAV_MAX_HT :
 			act = mb->acView_MaxWaveHeight;
 			break;
@@ -2257,6 +2263,8 @@ void MainWindow::slot_GroupColorMap (QAction *act)
     	dtc.set (GRB_WAV_SIG_HT,LV_GND_SURF,0);
     else if (act == mb->acView_MaxWaveHeight)
     	dtc.set (GRB_WAV_MAX_HT,LV_GND_SURF,0);
+    else if (act == mb->acView_PeakWavePeriod)
+    	dtc.set (GRB_WAV_PEAK_WPER,LV_GND_SURF,0);
     else if (act == mb->acView_WhiteCapProb)
     	dtc.set (GRB_WAV_WHITCAP_PROB,LV_GND_SURF,0);
 	//-----------------------------------

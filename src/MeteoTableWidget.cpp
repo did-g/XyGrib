@@ -343,6 +343,9 @@ void MeteoTableWidget::createTable()
 		else if (dataType==GRB_WAV_WHITCAP_PROB) {
 			addLine_WaveWhitecap (dataType, lig++);
 		}
+		else if (dataType==GRB_WAV_PEAK_WPER) {
+			addLine_WavePeriod (dataType, lig++);
+		}
 		
 		//----------------------------------------------
 		// Unknown data
@@ -419,7 +422,7 @@ void MeteoTableWidget::addLine_WaveHeight (int type, int lig)
 	int col = 0;
 	addCell_title_dataline (DataCodeStr::toString(type), true, lig,col);
 	col ++;
-	for (iter=lspinfos.begin(); iter!=lspinfos.end(); iter++, col++)
+	for (iter=lspinfos.begin(); iter!=lspinfos.end(); ++iter, col++)
 	{
 		DataPointInfo * pinfo = *iter;
 		txt = "";
@@ -427,6 +430,30 @@ void MeteoTableWidget::addLine_WaveHeight (int type, int lig)
 		if (GribDataIsDef(v)) {
 			txt = Util::formatWaveHeight (v);
 			bgColor = QColor(plotter->getWaveHeightColor (v, true));
+		}
+		else
+			bgColor = Qt::white;
+		addCell_content(txt, layout,lig,col, 1,1, bgColor);
+	}
+}
+
+//-----------------------------------------------------------------
+void MeteoTableWidget::addLine_WavePeriod (int type, int lig)
+{
+	std::vector <DataPointInfo *>::iterator iter;
+	QColor    bgColor = Qt::white;
+	QString   txt;
+	int col = 0;
+	addCell_title_dataline (DataCodeStr::toString(type), true, lig,col);
+	col ++;
+	for (iter=lspinfos.begin(); iter!=lspinfos.end(); ++iter, col++)
+	{
+		DataPointInfo * pinfo = *iter;
+		txt = "";
+		double v = pinfo->getWaveData (type);
+		if (GribDataIsDef(v)) {
+			txt = Util::formatWavePeriod (v);
+			bgColor = QColor(plotter->getWavePeriodColor (v, true));
 		}
 		else
 			bgColor = Qt::white;

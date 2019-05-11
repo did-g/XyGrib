@@ -118,6 +118,7 @@ public:
 		QAction *acView_WaterTempColors;
 		QAction *acView_SigWaveHeight;
 		QAction *acView_MaxWaveHeight;
+		QAction *acView_PeakWavePeriod;
 		QAction *acView_WhiteCapProb;
     QActionGroup *acView_GroupWavesArrows;
         QAction *acView_WavesArrows_none;

@@ -602,6 +602,8 @@ int Grib2Record::analyseProductType ()
                 return GRB_WAV_MAX_PER; //Period of Maximum Individual Wave Height
             if (paramnumber==24)
                 return GRB_WAV_MAX_HT; //Maximum Individual Wave Height
+			if (paramnumber==34)
+                return GRB_WAV_PEAK_WPER; //Peak Wave Period
         } else if (paramcat==1){
             if (paramnumber==0)
                 return GRB_CUR_DIR;

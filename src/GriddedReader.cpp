@@ -166,6 +166,7 @@ bool GriddedReader::hasWaveDataType (int dataType)  const
 			  || hasDataType (GRB_WAV_PRIM_PER)
 			  || hasDataType (GRB_WAV_SCDY_DIR)
 			  || hasDataType (GRB_WAV_SCDY_PER)
+			  || hasDataType (GRB_WAV_PEAK_WPER)
 			  || hasDataType (GRB_WAV_WHITCAP_PROB);
 			break;
 		default :
